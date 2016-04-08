@@ -17,6 +17,7 @@ ENV PYTHON_VERSION ${PYTHON_VERSION}
 ENV PYTHON_PIP_VERSION 8.1.1
 
 RUN set -ex \
+	&& apt-get update && apt-get install -y tk-dev && apt-get clean \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
 	&& curl -fSL "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -38,7 +39,7 @@ RUN set -ex \
 		\( -type d -a -name test -o -name tests \) \
 		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
 		-exec rm -rf '{}' + \
-	&& rm -rf /usr/src/python
+	&& rm -rf /usr/src/python /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # install "virtualenv", since the vast majority of users of this image will want it
 RUN pip install --no-cache-dir virtualenv
